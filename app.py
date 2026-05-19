@@ -482,7 +482,8 @@ SECTORES = {
         "FMTY14.MX", "DANHOS13.MX", "NVDA", "WMT", "NEM", "LAES", "RGTI", "1211N.MX", "BBAI", "DPZ",
         "XOM", "PDD", "LCID", "CVX", "SPOT", "NU", "BABA", "KO", "MSFT", "AAPL",
         "MU", "TSM", "PLTR", "GOOGL", "AEM", "CRWV", "BRK-B", "ASML", "GS", "BLK", "REGN", "JNJ", "MELI",
-        "INTC",
+        "INTC", "APLD", "ZJK", "WATT", "AVGO", "XYZ", "AMD", "FTV", "SHOP", "UBER", "MSTR", "SMCI", "WDC",
+        "CRM", "INUV", "HOOD", "V", "BAC", "AXP", "PM", "DIS",
     ],
 }
 
