@@ -757,7 +757,7 @@ with st.sidebar:
     periodo_rsi = st.slider("Periodo RSI", 7, 21, 14)
     historia    = st.selectbox("Historia", ["1y", "2y", "3y"], index=1)
     rsi_sc      = st.slider("RSI Sobrecomprado", 50, 70, 80)
-    rsi_sv      = st.slider("RSI Sobrevendido",  20, 40, 30)
+    rsi_sv      = st.slider("RSI Sobrevendido",  20, 40, 50)
     lote        = st.slider("Tamaño de lote",    20, 100, 50)
     max_workers = st.slider("Hilos paralelos",   5,  30,  20)
 
