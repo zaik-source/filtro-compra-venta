@@ -621,7 +621,7 @@ def correr_analisis(tickers, config, progress_bar, status_text):
         )
 
         cond1 = precio > sma50
-        cond2 = rsi_ayer < config["rsi_sobre_vendido"] + 5 and rsi_hoy > rsi_ayer
+        cond2 = rsi_ayer < config["rsi_sobre_vendido"] and rsi_hoy > rsi_ayer
         cond3 = precio > sma20
         cond4 = volumen_fuerte
         cond5 = macd_cruce
