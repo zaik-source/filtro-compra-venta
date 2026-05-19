@@ -481,7 +481,8 @@ SECTORES = {
         "QQQ", "VOO", "IAU", "IBIT", "TSLA", "AMZN", "META", "ORCL", "NFLX", "FIBRAPL14.MX",
         "FMTY14.MX", "DANHOS13.MX", "NVDA", "WMT", "NEM", "LAES", "RGTI", "1211N.MX", "BBAI", "DPZ",
         "XOM", "PDD", "LCID", "CVX", "SPOT", "NU", "BABA", "KO", "MSFT", "AAPL",
-        "MU", "TSM", "PLTR", "GOOGL",
+        "MU", "TSM", "PLTR", "GOOGL", "AEM", "CRWV", "BRK-B", "ASML", "GS", "BLK", "REGN", "JNJ", "MELI",
+        "INTC",
     ],
 }
 
