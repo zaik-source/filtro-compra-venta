@@ -476,6 +476,13 @@ SECTORES = {
         "NI", "NRG", "OGE", "PCG", "PEG", "PNM", "PNW", "PPL", "SO", "SRE",
         "WEC", "XEL",
     ],
+
+    "ZAIK": [
+        "QQQ", "VOO", "IAU", "IBIT", "TSLA", "AMZN", "META", "ORCL", "NFLX", "FIBRAPL14.MX",
+        "FMTY14.MX", "DANHOS13.MX", "NVDA", "WMT", "NEM", "LAES", "RGTI", "1211N.MX", "BBAI", "DPZ",
+        "XOM", "PDD", "LCID", "CVX", "SPOT", "NU", "BABA", "KO", "MSFT", "AAPL",
+        "MU", "TSM", "PLTR", "GOOGL",
+    ],
 }
 
 # ══════════════════════════════════════════════════════════════════════════
