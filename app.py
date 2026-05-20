@@ -459,7 +459,7 @@ SECTORES = {
         "TRGP", "TRMD", "TRP", "TS", "TTE", "TXO", "UEC", "UGP", "URG", "UROY",
         "USAC", "USEG", "UUUU", "VAL", "VET", "VG", "VIST", "VIVK", "VLO", "VNOM",
         "VOC", "VTOL", "VTS", "WBI", "WDS", "WES", "WFRD", "WHD", "WKC", "WMB",
-        "WTI", "WTTR", "XOM", "XPRO", "YPF"
+        "WTI", "WTTR", "XOM", "XPRO", "YPF",
     ],
 
     "Financial": [
@@ -500,8 +500,33 @@ SECTORES = {
         "WEC", "XEL",
     ],
 
-        "BMV": [
-        "KOF.MX", 
+    "BMV": [
+        "AC.MX", "AERO.MX", "ACTINVRB.MX", "AGUA.MX", "AGUILASCPO.MX",
+        "ALPEKA.MX", "ALSEA.MX", "AMXB.MX", "ARA.MX", "ASURB.MX",
+        "AUTLANB.MX", "AXTELCPO.MX", "BBAJIOO.MX", "BIMBOA.MX", "BOLSAA.MX",
+        "CEMEXCPO.MX", "CHDRAUIB.MX", "CIDMEGA.MX", "CIEB.MX", "CMOCTEZ.MX", "CADUA.MX",
+        "CMRB.MX", "CUERVO.MX", "CULTIBAB.MX", "CYDSASAA.MX", "DANHOS13.MX",
+        "DINEB.MX", "FEMSAUB.MX", "FINAMEXO.MX", "FRAGUAB.MX", "GAPB.MX",
+        "GCARSOA1.MX", "GCC.MX", "GENTERA.MX", "GFINBURO.MX", "GFNORTEO.MX",
+        "GIGANTE.MX", "GISSAA.MX", "GMEXICOB.MX", "GNP.MX", "GPH1.MX",
+        "GRUMAB.MX", "HERDEZ.MX", "HOTEL.MX", "ICHB.MX",
+        "INVEXA.MX", "KIMBERA.MX", "KOFUBL.MX", "KUOB.MX", "LABB.MX",
+        "LACOMERUBC.MX", "LAMOSA.MX", "LASITE.MX", "LIVEPOLC-1.MX", "MEDICAB.MX",
+        "MEGACPO.MX", "MFRISCOA-1.MX", "NEMAKA.MX", "OMAB.MX", "ORBIA.MX",
+        "PE&OLES.MX", "PINFRA.MX", "POSADASA.MX", "Q.MX", "RA.MX",
+        "RLHA.MX", "ROBOTIKFF.MX", "SIMECB.MX", "SORIANAB.MX", "TLEVISACPO.MX", "TRAXIONA.MX",
+        "VESTA.MX", "VINTE.MX", "VISTAA.MX", "VITROA.MX", "VOLARA.MX", "WALMEX.MX",
+        "FIBRAPL14.MX", "FIHO12.MX", "FINN13.MX", "FMTY14.MX",
+        "FIBRAMQ12.MX", "FZUAD17.MX", "FUNO11.MX", "TERRA13.MX",
+        "FIBRAHD15.MX", "FIBRAUP18.MX", "FPLUS16.MX", "FEBE19.MX",
+        "FVIA16.MX", "EDM17.MX", "DANHOS13.MX",
+    ],
+
+    "FIBRAS": [
+        "FIBRAPL14.MX", "FIHO12.MX", "FINN13.MX", "FMTY14.MX",
+        "FIBRAMQ12.MX", "FZUAD17.MX", "FUNO11.MX", "TERRA13.MX",
+        "FIBRAHD15.MX", "FIBRAUP18.MX", "FPLUS16.MX", "FEBE19.MX",
+        "FVIA16.MX", "EDM17.MX", "DANHOS13.MX",
     ],
     
     "ZAIK": [
