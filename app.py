@@ -430,7 +430,7 @@ SECTORES = {
         "MUX", "NAK", "NAMM", "NB", "NEM", "NEU", "NEWP", "NEXA", "NEXM", "NFGC",
         "NG", "NGVT", "NICM", "NMG", "NTIC", "NTR", "NUE", "NVA", "NWGL", "NWPX",
         "NXTS", "ODC", "ODV", "OEC", "OGC", "OLN", "OMEX", "OR", "ORGN", "ORLA",
-        "PAAS", "PKX", "PLG", "PPG", "PPTA", "PRM", "PZG", "REA", "RETO", "REX",
+        "PAAS", "PKX", "PLG", "PPG", "PPTA", "PRM", "PZG", "RETO", "REX",
         "RGLD", "RIO", "RMIX", "RPM", "RS", "RYAM", "SA", "SBMT", "SBSW", "SCCO",
         "SCL", "SCZM", "SEED", "SGML", "SHW", "SID", "SIM", "SKE", "SLI", "SLSR",
         "SLVM", "SMG", "SMID", "SNES", "SOLS", "SQM", "SSD", "SSL", "SSRM", "STLD",
