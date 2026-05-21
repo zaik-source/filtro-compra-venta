@@ -517,10 +517,17 @@ SECTORES = {
     ],
 
     "Utilities": [
-        "AEE", "AEP", "AES", "AGR", "ATO", "AWK", "CMS", "CNP", "D", "DTE",
-        "DUK", "ED", "EIX", "ES", "ETR", "EVRG", "EXC", "FE", "LNT", "NEE",
-        "NI", "NRG", "OGE", "PCG", "PEG", "PNM", "PNW", "PPL", "SO", "SRE",
-        "WEC", "XEL",
+        "AEE", "AEP", "AES", "AGIG", "AQN", "ARTNA", "ATO", "AVA", "AWK", "AWR",
+        "AXIA", "BEP", "BEPC", "BESS", "BIP", "BIPC", "BKH", "BNRG", "CDZI", "CEG",
+        "CEPU", "CIG", "CMS", "CNP", "CPK", "CREG", "CTRI", "CWCO", "CWEN", "CWT",
+        "D", "DGXX", "DTE", "DUK", "ED", "EDN", "EIX", "ELLO", "ELPC", "EMA",
+        "ENIC", "ENLT", "ES", "ETR", "EVRG", "EXC", "FE", "FLNC", "FTS",
+        "GNE", "GWRS", "HE", "HTO", "HTOO", "IDA", "IMSR", "KEN", "KEP", "LNT",
+        "MDU", "MGEE", "MSEX", "MWH", "NEE", "NGG", "NI", "NJR", "NKLR", "NRG",
+        "NRGV", "NWE", "NWN", "NXXT", "OGE", "OGS", "OKLO", "OPAL", "ORA", "PCG",
+        "PCYO", "PEG", "PNW", "POR", "PPL", "RGCO", "RNW", "SAFX", "SBS", "SO",
+        "SPH", "SR", "SRE", "STEM", "SUUN", "SWX", "TAC", "TLN", "TXNM", "UGI",
+        "UTL", "VGAS", "VST", "WAVE", "WEC", "WTRG", "XEL", "XIFR", "YORW",
     ],
 
     "BMV": [
