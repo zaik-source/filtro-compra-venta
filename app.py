@@ -693,8 +693,8 @@ SECTORES = {
     ],
 
     "Industrials": [
-        "AÑADIR"
-
+        "AÑADIR",
+    ],
     "Real Estate": [
         "AAT", "ABR", "ACR", "ACRE", "ADAM", "ADC", "AEI", "AGNC", "AGNT", "AHR", 
         "AHRT", "AHT", "AIRE", "AIV", "AKR", "ALBT", "ALX", "AMH", "AMT", "AOMR", 
