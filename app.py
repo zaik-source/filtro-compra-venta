@@ -886,7 +886,7 @@ SECTORES = {
         "XOM", "PDD", "LCID", "CVX", "SPOT", "NU", "BABA", "KO", "MSFT", "AAPL",
         "MU", "TSM", "PLTR", "GOOGL", "AEM", "CRWV", "BRK-B", "ASML", "GS", "BLK", "REGN", "JNJ", "MELI",
         "INTC", "APLD", "ZJK", "WATT", "AVGO", "XYZ", "AMD", "FTV", "SHOP", "UBER", "MSTR", "SMCI", "WDC",
-        "CRM", "INUV", "HOOD", "V", "BAC", "AXP", "PM", "DIS", "BVS", "FUNO11.MX",
+        "CRM", "INUV", "HOOD", "V", "BAC", "AXP", "PM", "DIS", "BVS", "FUNO11.MX", "QTEX",
     ],
 
     "TODOS": [
