@@ -1239,7 +1239,7 @@ SECTORES = {
         "VPU", "VRIG", "VRP", "VTEB", "VTHR", "VTI", "VTIP", "VTWO", "VUG", "VUSE", 
         "VXUS", "VWOB", "WCBR", "WCLD", "WOMN", "WOOD", "XAR", "XBI", "XLB", "XLC", 
         "XLE", "XLF", "XLK", "XLI", "XLP", "XLRE", "XLU", "XLV", "XLY", "XOP", 
-        "XPH", "XSD", "XSW", "XTL", "XTN", "ZROZ"
+        "XPH", "XSD", "XSW", "XTL", "XTN", "ZROZ",
     
     #SHELL COMPANIES
         "AACB", "AACI", "AACO", "ACAA", "ACGCU", "ADAC", "AEAQ", "AEXA", "AFJK", "AIIA", 
