@@ -881,12 +881,13 @@ SECTORES = {
     ],
     
     "ZAIK": [
-        "QQQ", "VOO", "IAU", "IBIT", "TSLA", "AMZN", "META", "ORCL", "NFLX", "FIBRAPL14.MX",
-        "FMTY14.MX", "DANHOS13.MX", "NVDA", "WMT", "NEM", "LAES", "RGTI", "1211N.MX", "BBAI", "DPZ",
-        "XOM", "PDD", "LCID", "CVX", "SPOT", "NU", "BABA", "KO", "MSFT", "AAPL",
-        "MU", "TSM", "PLTR", "GOOGL", "AEM", "CRWV", "BRK-B", "ASML", "GS", "BLK", "REGN", "JNJ", "MELI",
-        "INTC", "APLD", "ZJK", "WATT", "AVGO", "XYZ", "AMD", "FTV", "SHOP", "UBER", "MSTR", "SMCI", "WDC",
-        "CRM", "INUV", "HOOD", "V", "BAC", "AXP", "PM", "DIS", "BVS", "FUNO11.MX", "QTEX",
+        "QQQ.MX", "VOO.MX", "IAU.MX", "IBIT", "TSLA.MX", "AMZN.MX", "META.MX", "ORCL.MX", "NFLX.MX", "FIBRAPL14.MX",
+        "FMTY14.MX", "DANHOS13.MX", "NVDA.MX", "WMT.MX", "NEM.MX", "LAES", "RGTI", "1211N.MX", "BBAI", "DPZ.MX",
+        "XOM.MX", "PDDN.MX", "LCID", "CVX.MX", "SPOTN.MX", "NUN.MX", "BABAN.MX", "KO.MX", "MSFT.MX", "AAPL.MX",
+        "MU.MX", "TSMN.MX", "PLTR.MX", "GOOGL.MX", "AEM.MX", "CRWV.MX", "BRKB.MX", "ASML.MX", "GS.MX", "BLK.MX", "REGN.MX", 
+        "JNJ.MX", "MELIN.MX", "INTC.MX", "APLD", "ZJK", "WATT", "AVGO.MX", "XYZ.MX", "AMD.MX", "FTV", "SHOPN.MX", "UBER.MX",
+        "MSTR.MX", "SMCI.MX", "WDC.MX", "CRM.MX", "INUV", "HOOD.MX", "V.MX", "BAC.MX", "AXP.MX", "PM.MX", "DIS.MX",
+        "BVS", "FUNO11.MX", "QTEX",
     ],
 
     "TODOS": [
