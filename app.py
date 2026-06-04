@@ -1701,6 +1701,115 @@ def correr_analisis(tickers, config, progress_bar, status_text):
     return df
 
 # ══════════════════════════════════════════════════════════════════════════
+# FILTROS
+# ══════════════════════════════════════════════════════════════════════════
+
+def aplicar_filtros(df, filtros):
+    df_f = df.copy()
+    if filtros["ticker_busq"]:
+        df_f = df_f[df_f["Ticker"].str.upper().str.contains(filtros["ticker_busq"].upper())]
+    if filtros["señal"] != "Todas":
+        df_f = df_f[df_f["Señal"] == filtros["señal"]]
+    df_f = df_f[(df_f["RSI"] >= filtros["rsi_min"]) & (df_f["RSI"] <= filtros["rsi_max"])]
+    df_f = df_f[(df_f["% SMA20"] >= filtros["sma20_min"]) & (df_f["% SMA20"] <= filtros["sma20_max"])]
+    df_f = df_f[(df_f["% SMA50"] >= filtros["sma50_min"]) & (df_f["% SMA50"] <= filtros["sma50_max"])]
+    df_f = df_f[(df_f["% SMA200"] >= filtros["sma200_min"]) & (df_f["% SMA200"] <= filtros["sma200_max"])]
+    if filtros["precio_min"] is not None:
+        df_f = df_f[df_f["Precio"] >= filtros["precio_min"]]
+    if filtros["precio_max"] is not None:
+        df_f = df_f[df_f["Precio"] <= filtros["precio_max"]]
+    if filtros["solo_vol_alto"]:
+        df_f = df_f[df_f.apply(
+            lambda r: (r["Vol Hoy"] is not None and r["Vol Avg20"] is not None
+                       and not pd.isna(r["Vol Hoy"]) and not pd.isna(r["Vol Avg20"])
+                       and r["Vol Hoy"] > r["Vol Avg20"]), axis=1)]
+    if filtros["solo_macd_pos"]:
+        df_f = df_f[df_f["MACD"] > df_f["Signal"]]
+    return df_f.reset_index(drop=True)
+
+
+def render_filtros(df):
+    st.markdown("""
+    <style>
+    .filter-bar {
+        background: linear-gradient(135deg, #0d1828 0%, #101e30 100%);
+        border: 1px solid #1a2d45; border-radius: 8px;
+        padding: 0.9rem 1.2rem 0.6rem 1.2rem; margin: 1rem 0 0.5rem 0;
+    }
+    .filter-title { font-size:0.68rem; letter-spacing:0.14em; text-transform:uppercase;
+                    color:#4a7aaa; margin-bottom:0.6rem; }
+    .result-count { font-size:0.72rem; color:#4a7aaa; letter-spacing:0.08em; margin-bottom:0.5rem; }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="filter-bar">', unsafe_allow_html=True)
+    st.markdown('<div class="filter-title">🔍 FILTROS</div>', unsafe_allow_html=True)
+
+    # Fila 1: Ticker · Señal · Precio · Reset
+    c1, c2, c3, c4, c5 = st.columns([2, 2, 1.5, 1.5, 1])
+    with c1:
+        ticker_busq = st.text_input("Ticker", placeholder="Buscar… ej. NVDA",
+                                    label_visibility="collapsed", key="f_ticker")
+    with c2:
+        señal_opt = st.selectbox("Señal", ["Todas", "COMPRAR", "POSIBLE VENTA", "NEUTRAL"],
+                                 label_visibility="collapsed", key="f_señal")
+    with c3:
+        precio_min = st.number_input("Precio ≥", value=None, placeholder="Precio mín",
+                                     label_visibility="collapsed", key="f_precio_min", step=1.0)
+    with c4:
+        precio_max = st.number_input("Precio ≤", value=None, placeholder="Precio máx",
+                                     label_visibility="collapsed", key="f_precio_max", step=1.0)
+    with c5:
+        reset = st.button("↺ Reset", key="f_reset")
+
+    # Fila 2: rangos numéricos RSI / SMAs
+    rsi_min_v    = float(round(df["RSI"].min(),     1)) if not df.empty else 0.0
+    rsi_max_v    = float(round(df["RSI"].max(),     1)) if not df.empty else 100.0
+    sma20_min_v  = float(round(df["% SMA20"].min(), 1)) if not df.empty else -100.0
+    sma20_max_v  = float(round(df["% SMA20"].max(), 1)) if not df.empty else  100.0
+    sma50_min_v  = float(round(df["% SMA50"].min(), 1)) if not df.empty else -100.0
+    sma50_max_v  = float(round(df["% SMA50"].max(), 1)) if not df.empty else  100.0
+    sma200_min_v = float(round(df["% SMA200"].min(),1)) if not df.empty else -100.0
+    sma200_max_v = float(round(df["% SMA200"].max(),1)) if not df.empty else  100.0
+
+    c6,c7,c8,c9,c10,c11,c12,c13 = st.columns(8)
+    with c6:  rsi_min    = st.number_input("RSI ≥",     value=rsi_min_v,    min_value=0.0, max_value=100.0, step=1.0, key="f_rsi_min")
+    with c7:  rsi_max    = st.number_input("RSI ≤",     value=rsi_max_v,    min_value=0.0, max_value=100.0, step=1.0, key="f_rsi_max")
+    with c8:  sma20_min  = st.number_input("SMA20% ≥",  value=sma20_min_v,  step=1.0, key="f_sma20_min")
+    with c9:  sma20_max  = st.number_input("SMA20% ≤",  value=sma20_max_v,  step=1.0, key="f_sma20_max")
+    with c10: sma50_min  = st.number_input("SMA50% ≥",  value=sma50_min_v,  step=1.0, key="f_sma50_min")
+    with c11: sma50_max  = st.number_input("SMA50% ≤",  value=sma50_max_v,  step=1.0, key="f_sma50_max")
+    with c12: sma200_min = st.number_input("SMA200% ≥", value=sma200_min_v, step=1.0, key="f_sma200_min")
+    with c13: sma200_max = st.number_input("SMA200% ≤", value=sma200_max_v, step=1.0, key="f_sma200_max")
+
+    # Fila 3: checkboxes rápidos
+    cc1, cc2, _ = st.columns([2, 2, 8])
+    with cc1: solo_vol_alto = st.checkbox("📶 Solo Vol > Avg", key="f_vol_alto")
+    with cc2: solo_macd_pos = st.checkbox("📈 MACD > Signal",  key="f_macd_pos")
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    if reset:
+        for k in ["f_ticker","f_señal","f_precio_min","f_precio_max",
+                  "f_rsi_min","f_rsi_max","f_sma20_min","f_sma20_max",
+                  "f_sma50_min","f_sma50_max","f_sma200_min","f_sma200_max",
+                  "f_vol_alto","f_macd_pos"]:
+            if k in st.session_state:
+                del st.session_state[k]
+        st.rerun()
+
+    return {
+        "ticker_busq":   ticker_busq,   "señal":         señal_opt,
+        "precio_min":    precio_min,    "precio_max":    precio_max,
+        "rsi_min":       rsi_min,       "rsi_max":       rsi_max,
+        "sma20_min":     sma20_min,     "sma20_max":     sma20_max,
+        "sma50_min":     sma50_min,     "sma50_max":     sma50_max,
+        "sma200_min":    sma200_min,    "sma200_max":    sma200_max,
+        "solo_vol_alto": solo_vol_alto, "solo_macd_pos": solo_macd_pos,
+    }
+
+
+# ══════════════════════════════════════════════════════════════════════════
 # RENDERIZADO HTML DE TABLA
 # ══════════════════════════════════════════════════════════════════════════
 
@@ -1824,11 +1933,11 @@ st.markdown(
 
 if correr:
     config = {
-        "periodo_rsi":      periodo_rsi,
-        "historia":         historia,
-        "lote":             lote,
-        "max_workers":      max_workers,
-        "vol_periodo":      20,
+        "periodo_rsi":        periodo_rsi,
+        "historia":           historia,
+        "lote":               lote,
+        "max_workers":        max_workers,
+        "vol_periodo":        20,
         "rsi_sobre_comprado": rsi_sc,
         "rsi_sobre_vendido":  rsi_sv,
     }
@@ -1836,7 +1945,7 @@ if correr:
     progress_bar = st.progress(0)
     status_text  = st.empty()
 
-    tickers = SECTORES[sector_seleccionado]
+    tickers   = SECTORES[sector_seleccionado]
     df_result = correr_analisis(tickers, config, progress_bar, status_text)
 
     progress_bar.empty()
@@ -1845,39 +1954,62 @@ if correr:
     if df_result.empty:
         st.error("❌ No se generaron resultados. Verifica la conexión o los tickers.")
     else:
-        n_compra  = int(df_result["Compra"].sum())
-        n_venta   = int(df_result["Venta"].sum())
-        n_neutral = len(df_result) - n_compra - n_venta
+        # Persiste para que los filtros no borren los datos al interactuar
+        st.session_state["df_result"] = df_result
+        st.session_state["sector_result"] = sector_seleccionado
 
-        c1, c2, c3, c4 = st.columns(4)
-        with c1:
-            st.markdown(f"""<div class="metric-card">
-                <div class="metric-value" style="color:#00e676;">{n_compra}</div>
-                <div class="metric-label">🟢 Compra</div></div>""", unsafe_allow_html=True)
-        with c2:
-            st.markdown(f"""<div class="metric-card">
-                <div class="metric-value" style="color:#ff5252;">{n_venta}</div>
-                <div class="metric-label">🔴 Posible Venta</div></div>""", unsafe_allow_html=True)
-        with c3:
-            st.markdown(f"""<div class="metric-card">
-                <div class="metric-value" style="color:#ffd740;">{n_neutral}</div>
-                <div class="metric-label">🟡 Neutral</div></div>""", unsafe_allow_html=True)
-        with c4:
-            st.markdown(f"""<div class="metric-card">
-                <div class="metric-value" style="color:#4fc3f7;">{len(df_result)}</div>
-                <div class="metric-label">📊 Procesados</div></div>""", unsafe_allow_html=True)
+if "df_result" in st.session_state and not st.session_state["df_result"].empty:
+    df_result = st.session_state["df_result"]
 
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown(render_tabla(df_result), unsafe_allow_html=True)
+    # ── Métricas totales (sin filtrar) ──────────────────────────────────
+    n_compra  = int(df_result["Compra"].sum())
+    n_venta   = int(df_result["Venta"].sum())
+    n_neutral = len(df_result) - n_compra - n_venta
 
-        # CSV download
-        csv = df_result.drop(columns=["Compra", "Venta"]).to_csv(index=False)
-        st.download_button(
-            label="⬇️  Descargar CSV",
-            data=csv,
-            file_name=f"screener_{sector_seleccionado.replace(' ','_')}.csv",
-            mime="text/csv"
-        )
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        st.markdown(f"""<div class="metric-card">
+            <div class="metric-value" style="color:#00e676;">{n_compra}</div>
+            <div class="metric-label">🟢 Compra</div></div>""", unsafe_allow_html=True)
+    with c2:
+        st.markdown(f"""<div class="metric-card">
+            <div class="metric-value" style="color:#ff5252;">{n_venta}</div>
+            <div class="metric-label">🔴 Posible Venta</div></div>""", unsafe_allow_html=True)
+    with c3:
+        st.markdown(f"""<div class="metric-card">
+            <div class="metric-value" style="color:#ffd740;">{n_neutral}</div>
+            <div class="metric-label">🟡 Neutral</div></div>""", unsafe_allow_html=True)
+    with c4:
+        st.markdown(f"""<div class="metric-card">
+            <div class="metric-value" style="color:#4fc3f7;">{len(df_result)}</div>
+            <div class="metric-label">📊 Procesados</div></div>""", unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ── Barra de filtros ────────────────────────────────────────────────
+    filtros     = render_filtros(df_result)
+    df_filtrado = aplicar_filtros(df_result, filtros)
+
+    # ── Contador ────────────────────────────────────────────────────────
+    st.markdown(
+        f'<div class="result-count">Mostrando <b style="color:#4fc3f7">{len(df_filtrado)}</b> '
+        f'de <b>{len(df_result)}</b> resultados</div>',
+        unsafe_allow_html=True
+    )
+
+    if df_filtrado.empty:
+        st.warning("⚠️ Ningún ticker cumple los filtros actuales.")
+    else:
+        st.markdown(render_tabla(df_filtrado), unsafe_allow_html=True)
+
+    # ── CSV (datos ya filtrados) ─────────────────────────────────────────
+    csv = df_filtrado.drop(columns=["Compra", "Venta"], errors="ignore").to_csv(index=False)
+    st.download_button(
+        label="⬇️  Descargar CSV (filtrado)",
+        data=csv,
+        file_name=f"screener_{sector_seleccionado.replace(' ','_')}.csv",
+        mime="text/csv"
+    )
 
 else:
     st.markdown("""
