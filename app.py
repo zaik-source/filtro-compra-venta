@@ -617,13 +617,13 @@ def clasificar_macd_estado(macd_line, signal_line):
     signal_ayer = signal_line.iloc[-2]
 
     if (macd_ayer < signal_ayer) and (macd_hoy > signal_hoy):
-        return "🟢 CRUCE ↑"
+        return "CRUCE ↑"
     elif (macd_ayer > signal_ayer) and (macd_hoy < signal_hoy):
-        return "🔴 CRUCE ↓"
+        return "CRUCE ↓"
     elif macd_hoy > signal_hoy:
-        return "▲ SOBRE"
+        return "SOBRE"
     else:
-        return "▼ BAJO"
+        return "BAJO"
 
 
 def formatear_volumen(valor):
