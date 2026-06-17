@@ -617,9 +617,9 @@ def clasificar_macd_estado(macd_line, signal_line):
     signal_ayer = signal_line.iloc[-2]
 
     if (macd_ayer < signal_ayer) and (macd_hoy > signal_hoy):
-        return "CRUCE ↑"
+        return "CRUCE ARRIBA"
     elif (macd_ayer > signal_ayer) and (macd_hoy < signal_hoy):
-        return "CRUCE ↓"
+        return "CRUCE ABAJO"
     elif macd_hoy > signal_hoy:
         return "SOBRE"
     else:
