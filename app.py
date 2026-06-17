@@ -605,8 +605,8 @@ def clasificar_macd_estado(macd_line, signal_line):
     Retorna:
         'CRUCE ARRIBA'  — cruzó arriba hoy  (ayer debajo, hoy encima)
         'CRUCE ABAJO'  — cruzó abajo hoy   (ayer encima, hoy debajo)
-        '▲ SOBRE'     — MACD sobre señal  (sin cruce hoy)
-        '▼ BAJO'      — MACD bajo señal   (sin cruce hoy)
+        'SOBRE'     — MACD sobre señal  (sin cruce hoy)
+        'BAJO'      — MACD bajo señal   (sin cruce hoy)
     """
     if len(macd_line) < 2 or len(signal_line) < 2:
         return "N/A"
@@ -621,9 +621,9 @@ def clasificar_macd_estado(macd_line, signal_line):
     elif (macd_ayer > signal_ayer) and (macd_hoy < signal_hoy):
         return "CRUCE ABAJO"
     elif macd_hoy > signal_hoy:
-        return "▲ SOBRE"
+        return "SOBRE"
     else:
-        return "▼ BAJO"
+        return "BAJO"
 
 
 def formatear_volumen(valor):
@@ -806,7 +806,7 @@ def render_filtros(df):
     with c3:
         macd_estado_opt = st.selectbox(
             "MACD Estado",
-            ["Todos", "CRUCE ARRIBA", "CRUCE ABAJO", "▲ SOBRE", "▼ BAJO"],
+            ["Todos", "CRUCE ARRIBA", "CRUCE ABAJO", "SOBRE", "BAJO"],
             label_visibility="collapsed", key="f_macd_estado"
         )
     with c4:
@@ -900,8 +900,8 @@ def render_tabla(df):
         mapa = {
             "CRUCE ARRIBA": "macd-cross-up",
             "CRUCE ABAJO": "macd-cross-down",
-            "▲ SOBRE":    "macd-above",
-            "▼ BAJO":     "macd-below",
+            "SOBRE":    "macd-above",
+            "BAJO":     "macd-below",
         }
         cls = mapa.get(estado, "")
         return f'<span class="{cls}">{estado}</span>' if cls else estado
@@ -1040,8 +1040,8 @@ if "df_result" in st.session_state and not st.session_state["df_result"].empty:
     n_neutral    = len(df_result) - n_compra - n_venta
     n_cruce_up   = int((df_result["MACD Estado"] == "CRUCE ARRIBA").sum())
     n_cruce_down = int((df_result["MACD Estado"] == "CRUCE ABAJO").sum())
-    n_sobre      = int((df_result["MACD Estado"] == "▲ SOBRE").sum())
-    n_bajo       = int((df_result["MACD Estado"] == "▼ BAJO").sum())
+    n_sobre      = int((df_result["MACD Estado"] == "SOBRE").sum())
+    n_bajo       = int((df_result["MACD Estado"] == "BAJO").sum())
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
@@ -1076,11 +1076,11 @@ if "df_result" in st.session_state and not st.session_state["df_result"].empty:
     with mc3:
         st.markdown(f"""<div class="metric-card">
             <div class="metric-value" style="color:#69f0ae;">{n_sobre}</div>
-            <div class="metric-label">MACD ▲ SOBRE señal</div></div>""", unsafe_allow_html=True)
+            <div class="metric-label">MACD SOBRE señal</div></div>""", unsafe_allow_html=True)
     with mc4:
         st.markdown(f"""<div class="metric-card">
             <div class="metric-value" style="color:#ff8a80;">{n_bajo}</div>
-            <div class="metric-label">MACD ▼ BAJO señal</div></div>""", unsafe_allow_html=True)
+            <div class="metric-label">MACD BAJO señal</div></div>""", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
