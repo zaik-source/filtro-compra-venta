@@ -603,10 +603,10 @@ def clasificar_macd_estado(macd_line, signal_line):
     Clasifica la posición del MACD respecto a su línea de señal.
 
     Retorna:
-        '🟢 CRUCE ↑'  — cruzó arriba hoy  (ayer debajo, hoy encima)
-        '🔴 CRUCE ↓'  — cruzó abajo hoy   (ayer encima, hoy debajo)
-        '▲ SOBRE'     — MACD sobre señal  (sin cruce hoy)
-        '▼ BAJO'      — MACD bajo señal   (sin cruce hoy)
+        'CRUCE ↑'  — cruzó arriba hoy  (ayer debajo, hoy encima)
+        'CRUCE ↓'  — cruzó abajo hoy   (ayer encima, hoy debajo)
+        'SOBRE'     — MACD sobre señal  (sin cruce hoy)
+        'BAJO'      — MACD bajo señal   (sin cruce hoy)
     """
     if len(macd_line) < 2 or len(signal_line) < 2:
         return "N/A"
@@ -806,7 +806,7 @@ def render_filtros(df):
     with c3:
         macd_estado_opt = st.selectbox(
             "MACD Estado",
-            ["Todos", "🟢 CRUCE ↑", "🔴 CRUCE ↓", "▲ SOBRE", "▼ BAJO"],
+            ["Todos", "CRUCE ↑", "CRUCE ↓", "SOBRE", "BAJO"],
             label_visibility="collapsed", key="f_macd_estado"
         )
     with c4:
@@ -898,10 +898,10 @@ def render_tabla(df):
 
     def macd_estado_html(estado):
         mapa = {
-            "🟢 CRUCE ↑": "macd-cross-up",
-            "🔴 CRUCE ↓": "macd-cross-down",
-            "▲ SOBRE":    "macd-above",
-            "▼ BAJO":     "macd-below",
+            "CRUCE ↑": "macd-cross-up",
+            "CRUCE ↓": "macd-cross-down",
+            "SOBRE":    "macd-above",
+            "BAJO":     "macd-below",
         }
         cls = mapa.get(estado, "")
         return f'<span class="{cls}">{estado}</span>' if cls else estado
@@ -1038,10 +1038,10 @@ if "df_result" in st.session_state and not st.session_state["df_result"].empty:
     n_compra     = int(df_result["Compra"].sum())
     n_venta      = int(df_result["Venta"].sum())
     n_neutral    = len(df_result) - n_compra - n_venta
-    n_cruce_up   = int((df_result["MACD Estado"] == "🟢 CRUCE ↑").sum())
-    n_cruce_down = int((df_result["MACD Estado"] == "🔴 CRUCE ↓").sum())
-    n_sobre      = int((df_result["MACD Estado"] == "▲ SOBRE").sum())
-    n_bajo       = int((df_result["MACD Estado"] == "▼ BAJO").sum())
+    n_cruce_up   = int((df_result["MACD Estado"] == "CRUCE ↑").sum())
+    n_cruce_down = int((df_result["MACD Estado"] == "CRUCE ↓").sum())
+    n_sobre      = int((df_result["MACD Estado"] == "SOBRE").sum())
+    n_bajo       = int((df_result["MACD Estado"] == "BAJO").sum())
 
     c1, c2, c3, c4 = st.columns(4)
     with c1:
