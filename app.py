@@ -898,10 +898,10 @@ def render_tabla(df):
 
     def macd_estado_html(estado):
         mapa = {
-            "🟢 CRUCE ↑": "macd-cross-up",
-            "🔴 CRUCE ↓": "macd-cross-down",
-            "▲ SOBRE":    "macd-above",
-            "▼ BAJO":     "macd-below",
+            "CRUCE ↑": "macd-cross-up",
+            "CRUCE ↓": "macd-cross-down",
+            "SOBRE":    "macd-above",
+            "BAJO":     "macd-below",
         }
         cls = mapa.get(estado, "")
         return f'<span class="{cls}">{estado}</span>' if cls else estado
