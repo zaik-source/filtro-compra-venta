@@ -603,8 +603,8 @@ def clasificar_macd_estado(macd_line, signal_line):
     Clasifica la posición del MACD respecto a su línea de señal.
 
     Retorna:
-        '🟢 CRUCE ↑'  — cruzó arriba hoy  (ayer debajo, hoy encima)
-        '🔴 CRUCE ↓'  — cruzó abajo hoy   (ayer encima, hoy debajo)
+        'CRUCE ARRIBA'  — cruzó arriba hoy  (ayer debajo, hoy encima)
+        'CRUCE ABAJO'  — cruzó abajo hoy   (ayer encima, hoy debajo)
         '▲ SOBRE'     — MACD sobre señal  (sin cruce hoy)
         '▼ BAJO'      — MACD bajo señal   (sin cruce hoy)
     """
