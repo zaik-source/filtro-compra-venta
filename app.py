@@ -617,9 +617,9 @@ def clasificar_macd_estado(macd_line, signal_line):
     signal_ayer = signal_line.iloc[-2]
 
     if (macd_ayer < signal_ayer) and (macd_hoy > signal_hoy):
-        return "🟢 CRUCE ↑"
+        return "CRUCE ARRIBA"
     elif (macd_ayer > signal_ayer) and (macd_hoy < signal_hoy):
-        return "🔴 CRUCE ↓"
+        return "CRUCE ABAJO"
     elif macd_hoy > signal_hoy:
         return "▲ SOBRE"
     else:
@@ -806,7 +806,7 @@ def render_filtros(df):
     with c3:
         macd_estado_opt = st.selectbox(
             "MACD Estado",
-            ["Todos", "🟢 CRUCE ↑", "🔴 CRUCE ↓", "▲ SOBRE", "▼ BAJO"],
+            ["Todos", "CRUCE ARRIBA", "CRUCE ABAJO", "▲ SOBRE", "▼ BAJO"],
             label_visibility="collapsed", key="f_macd_estado"
         )
     with c4:
@@ -898,8 +898,8 @@ def render_tabla(df):
 
     def macd_estado_html(estado):
         mapa = {
-            "🟢 CRUCE ↑": "macd-cross-up",
-            "🔴 CRUCE ↓": "macd-cross-down",
+            "CRUCE ARRIBA": "macd-cross-up",
+            "CRUCE ABAJO": "macd-cross-down",
             "▲ SOBRE":    "macd-above",
             "▼ BAJO":     "macd-below",
         }
@@ -1038,8 +1038,8 @@ if "df_result" in st.session_state and not st.session_state["df_result"].empty:
     n_compra     = int(df_result["Compra"].sum())
     n_venta      = int(df_result["Venta"].sum())
     n_neutral    = len(df_result) - n_compra - n_venta
-    n_cruce_up   = int((df_result["MACD Estado"] == "🟢 CRUCE ↑").sum())
-    n_cruce_down = int((df_result["MACD Estado"] == "🔴 CRUCE ↓").sum())
+    n_cruce_up   = int((df_result["MACD Estado"] == "CRUCE ARRIBA").sum())
+    n_cruce_down = int((df_result["MACD Estado"] == "CRUCE ABAJO").sum())
     n_sobre      = int((df_result["MACD Estado"] == "▲ SOBRE").sum())
     n_bajo       = int((df_result["MACD Estado"] == "▼ BAJO").sum())
 
