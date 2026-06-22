@@ -716,7 +716,7 @@ SECTORES = {
         "MU.MX", "TSMN.MX", "PLTR.MX", "GOOGL.MX", "AEM.MX", "CRWV.MX", "BRKB.MX", "ASMLN.MX", "GS.MX", "BLK.MX", "REGN.MX",
         "JNJ.MX", "MELIN.MX", "INTC.MX", "APLD", "ZJK", "WATT", "AVGO.MX", "XYZ.MX", "AMD.MX", "FTV", "SHOPN.MX", "UBER.MX",
         "MSTR.MX", "SMCI.MX", "WDC.MX", "CRM.MX", "INUV", "HOOD.MX", "V.MX", "BAC.MX", "AXP.MX", "PM.MX", "DIS.MX",
-        "BVS", "FUNO11.MX", "QTEX", "FULT", "CYPH", "LLY.MX", "JPM.MX", "CSCO.MX", "COST.MX", "MA.MX",
+        "BVS", "FUNO11.MX", "QTEX", "FULT", "CYPH", "LLY.MX", "JPM.MX", "CSCO.MX", "COST.MX", "MA.MX", "SPCX",
     ],
 }
 
