@@ -1750,16 +1750,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Leer ticker seleccionado via query params (puente JS→Streamlit)
-params = st.query_params
-if "ticker" in params and params["ticker"]:
-    t_param = params["ticker"].strip().upper()
-    if t_param != st.session_state.get("ticker_terminal"):
-        st.session_state["ticker_terminal"] = t_param
-        # Limpiar el query param para evitar que persista en reloads
-        st.query_params.clear()
-        st.rerun()
-
 # Inicializar session state
 if "ticker_terminal" not in st.session_state:
     st.session_state["ticker_terminal"] = None
@@ -1856,23 +1846,28 @@ if not st.session_state["df_result"].empty:
         unsafe_allow_html=True
     )
 
+    # ── TERMINAL FINANCIERA — aparece AQUÍ, encima de la tabla ─────────
+    ticker_terminal = st.session_state.get("ticker_terminal")
+    if ticker_terminal:
+        st.markdown("---")
+        render_terminal(ticker_terminal)
+        st.markdown("---")
+
     if df_filtrado.empty:
         st.warning("⚠️ Ningún ticker cumple los filtros actuales.")
     else:
-        # ── Tabla con tickers clicables via componente HTML ──────────────
-        ticker_activo = st.session_state.get("ticker_terminal")
-
-        # Construir HTML completo con JS bridge
+        # ── Tabla con tickers clicables via postMessage nativo Streamlit ─
         import streamlit.components.v1 as components
 
-        tabla_html = render_tabla_html(df_filtrado, ticker_activo)
-        n_rows     = len(df_filtrado)
-        height_px  = min(900, max(220, 56 + n_rows * 38))
+        ticker_activo = st.session_state.get("ticker_terminal")
+        tabla_html    = render_tabla_html(df_filtrado, ticker_activo)
+        n_rows        = len(df_filtrado)
+        height_px     = min(900, max(220, 56 + n_rows * 38))
 
-        # El JS envía el ticker al padre (Streamlit) via postMessage,
-        # que Streamlit captura si usamos st.components.v1.html con key.
-        # Como alternativa robusta: actualizamos ?ticker=X en la URL
-        # y Streamlit lo lee en query_params al rerun automático.
+        # Usamos components.html con retorno de valor.
+        # Streamlit captura window.parent.postMessage con la forma
+        # { type:"streamlit:setComponentValue", value: <cualquier cosa> }
+        # SIN recargar la página ni resetear session_state.
         html_tabla = f"""
         <!DOCTYPE html>
         <html>
@@ -1885,30 +1880,42 @@ if not st.session_state["df_result"].empty:
         <body>
         {tabla_html}
         <script>
-        function selectTicker(ticker) {{
-            // Actualiza la URL del frame padre con ?ticker=SYMBOL
-            // Streamlit detecta el cambio de query_params y hace rerun
-            try {{
-                var url = new URL(window.parent.location.href);
-                url.searchParams.set('ticker', ticker);
-                window.parent.history.pushState({{}}, '', url.toString());
-                // Dispara un rerun de Streamlit cambiando la URL
-                window.parent.location.href = url.toString();
-            }} catch(e) {{
-                // Fallback: postMessage
-                window.parent.postMessage({{
-                    isStreamlitMessage: true,
-                    type: 'streamlit:setComponentValue',
-                    value: ticker
-                }}, '*');
-            }}
+        // Protocolo nativo de Streamlit components para devolver un valor
+        // sin recargar la página: postMessage con isStreamlitMessage=true
+        function sendValue(val) {{
+            window.parent.postMessage({{
+                isStreamlitMessage: true,
+                type: "streamlit:setComponentValue",
+                value: val
+            }}, "*");
         }}
+
+        function selectTicker(ticker) {{
+            // Resaltar badge activo inmediatamente (feedback visual)
+            document.querySelectorAll('.ticker-badge').forEach(function(el) {{
+                el.classList.remove('active');
+            }});
+            event.target.classList.add('active');
+            // Enviar valor a Streamlit
+            sendValue(ticker);
+        }}
+
+        // Avisar a Streamlit que el componente está listo
+        window.addEventListener('load', function() {{
+            sendValue(null);
+        }});
         </script>
         </body>
         </html>
         """
 
-        components.html(html_tabla, height=height_px, scrolling=True)
+        # El valor retornado por components.html es el último enviado via postMessage
+        clicked = components.html(html_tabla, height=height_px, scrolling=True)
+
+        # Si el usuario hizo click en un ticker nuevo, actualizar session_state y rerun
+        if clicked and clicked != st.session_state.get("ticker_terminal"):
+            st.session_state["ticker_terminal"] = clicked
+            st.rerun()
 
     # CSV download
     csv = df_filtrado.drop(columns=["Compra", "Venta"], errors="ignore").to_csv(index=False)
@@ -1918,12 +1925,6 @@ if not st.session_state["df_result"].empty:
         file_name=f"screener_{sector_seleccionado.replace(' ', '_')}.csv",
         mime="text/csv"
     )
-
-    # ── TERMINAL FINANCIERA ──────────────────────────────────────────────
-    ticker_terminal = st.session_state.get("ticker_terminal")
-    if ticker_terminal:
-        st.markdown("---")
-        render_terminal(ticker_terminal)
 
 else:
     st.markdown("""
