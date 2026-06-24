@@ -1866,8 +1866,14 @@ if not st.session_state["df_result"].empty:
         idx_actual = tickers_lista.index(ticker_activo) if ticker_activo in tickers_lista else 0
 
         def _on_ticker_change():
-            """Callback: actualiza ticker_terminal cuando cambia el selectbox."""
-            st.session_state["ticker_terminal"] = st.session_state["sel_ticker_terminal"]
+            """Callback: actualiza ticker_terminal y limpia caché al cambiar el selectbox."""
+            nuevo = st.session_state["sel_ticker_terminal"]
+            st.session_state["ticker_terminal"] = nuevo
+            # Limpiar caché para forzar nueva descarga con el ticker correcto
+            terminal_cargar_df.clear()
+            terminal_cargar_info.clear()
+            terminal_sentimiento.clear()
+            terminal_cargar_fundamentales.clear()
 
         sel_col, cerrar_col = st.columns([5, 1])
         with sel_col:
