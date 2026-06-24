@@ -562,7 +562,7 @@ def correr_analisis(tickers, config, progress_bar, status_text):
         tickers, config["historia"], config["lote"], progress_bar, status_text
     )
     if precios_df.empty:
-        return pd.DataFrame()
+        return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
     resultados = []
     for ticker in precios_df.columns:
@@ -640,11 +640,11 @@ def correr_analisis(tickers, config, progress_bar, status_text):
 
     df = pd.DataFrame(resultados)
     if df.empty:
-        return df
+        return df, precios_df, volumen_df
     df["_orden"] = df["Compra"].astype(int) * 2 + df["Venta"].astype(int)
     df = df.sort_values(["_orden", "RSI"], ascending=[False, True]).reset_index(drop=True)
     df.drop(columns=["_orden"], inplace=True)
-    return df
+    return df, precios_df, volumen_df
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -1367,6 +1367,11 @@ def render_terminal(ticker_symbol):
     # Garantizar que siempre sea string limpio
     ticker_symbol = str(ticker_symbol).strip().upper()
 
+def render_terminal(ticker_symbol, precios_df=None, volumen_df=None):
+    """Renderiza la Terminal Financiera completa para el ticker dado."""
+    # Garantizar que siempre sea string limpio
+    ticker_symbol = str(ticker_symbol).strip().upper()
+
     st.markdown(f"""
     <div class="terminal-panel">
     <div class="terminal-panel-header">
@@ -1377,8 +1382,32 @@ def render_terminal(ticker_symbol):
     </div>
     """, unsafe_allow_html=True)
 
-    with st.spinner(f"Cargando datos para {ticker_symbol}..."):
-        df_raw = terminal_cargar_df(ticker_symbol)
+    # ── Usar datos del Screener si están disponibles (misma fuente = datos consistentes)
+    df_raw = pd.DataFrame()
+    if (precios_df is not None
+            and not precios_df.empty
+            and ticker_symbol in precios_df.columns):
+        # Reconstruir OHLCV desde los datos del screener (Close + Volume)
+        # Para Open/High/Low descargamos solo ese ticker individualmente
+        serie_close = precios_df[ticker_symbol].dropna()
+        serie_vol   = volumen_df[ticker_symbol].dropna() if (volumen_df is not None and ticker_symbol in volumen_df.columns) else None
+
+        with st.spinner(f"Cargando datos OHLC para {ticker_symbol}..."):
+            df_raw = terminal_cargar_df(ticker_symbol)
+
+        # Reemplazar Close y Volume con los datos exactos del Screener
+        if not df_raw.empty and not serie_close.empty:
+            # Alinear índices
+            idx_comun = df_raw.index.intersection(serie_close.index)
+            if len(idx_comun) > 0:
+                df_raw.loc[idx_comun, 'Close']  = serie_close.loc[idx_comun]
+            if serie_vol is not None and not serie_vol.empty:
+                idx_vol = df_raw.index.intersection(serie_vol.index)
+                if len(idx_vol) > 0:
+                    df_raw.loc[idx_vol, 'Volume'] = serie_vol.loc[idx_vol]
+    else:
+        with st.spinner(f"Cargando datos para {ticker_symbol}..."):
+            df_raw = terminal_cargar_df(ticker_symbol)
 
     if df_raw.empty:
         st.error(f"❌ No se encontraron datos para **{ticker_symbol}**. Verifica el símbolo.")
@@ -1776,7 +1805,7 @@ if correr:
     progress_bar = st.progress(0)
     status_text  = st.empty()
     tickers      = SECTORES[sector_seleccionado]
-    df_result    = correr_analisis(tickers, config, progress_bar, status_text)
+    df_result, precios_df, volumen_df = correr_analisis(tickers, config, progress_bar, status_text)
     progress_bar.empty()
     status_text.empty()
 
@@ -1784,8 +1813,10 @@ if correr:
         st.error("❌ No se generaron resultados. Verifica la conexión o los tickers.")
     else:
         st.session_state["df_result"]     = df_result
+        st.session_state["precios_df"]    = precios_df
+        st.session_state["volumen_df"]    = volumen_df
         st.session_state["sector_result"] = sector_seleccionado
-        st.session_state["ticker_terminal"] = None  # reset terminal al correr nuevo análisis
+        st.session_state["ticker_terminal"] = None
 
 # ── Mostrar resultados ───────────────────────────────────────────
 if not st.session_state["df_result"].empty:
@@ -1928,7 +1959,11 @@ if not st.session_state["df_result"].empty:
         ticker_terminal = ticker_terminal.strip().upper()
         st.session_state["ticker_terminal"] = ticker_terminal
         st.markdown("---")
-        render_terminal(ticker_terminal)
+        render_terminal(
+            ticker_terminal,
+            precios_df=st.session_state.get("precios_df"),
+            volumen_df=st.session_state.get("volumen_df"),
+        )
 
 else:
     st.markdown("""
