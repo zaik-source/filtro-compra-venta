@@ -1848,16 +1848,6 @@ if not st.session_state["df_result"].empty:
         unsafe_allow_html=True
     )
 
-    # ── TERMINAL FINANCIERA — aparece AQUÍ, encima de la tabla ─────────
-    ticker_terminal = st.session_state.get("ticker_terminal")
-    # Validar que sea un string limpio (no un objeto DeltaGenerator ni None)
-    if ticker_terminal and isinstance(ticker_terminal, str) and ticker_terminal.strip():
-        ticker_terminal = ticker_terminal.strip().upper()
-        st.session_state["ticker_terminal"] = ticker_terminal  # normalizar
-        st.markdown("---")
-        render_terminal(ticker_terminal)
-        st.markdown("---")
-
     if df_filtrado.empty:
         st.warning("⚠️ Ningún ticker cumple los filtros actuales.")
     else:
@@ -1918,6 +1908,14 @@ if not st.session_state["df_result"].empty:
         file_name=f"screener_{sector_seleccionado.replace(' ', '_')}.csv",
         mime="text/csv"
     )
+
+    # ── TERMINAL FINANCIERA — aparece AQUÍ, debajo de la tabla ──────────
+    ticker_terminal = st.session_state.get("ticker_terminal")
+    if ticker_terminal and isinstance(ticker_terminal, str) and ticker_terminal.strip():
+        ticker_terminal = ticker_terminal.strip().upper()
+        st.session_state["ticker_terminal"] = ticker_terminal
+        st.markdown("---")
+        render_terminal(ticker_terminal)
 
 else:
     st.markdown("""
