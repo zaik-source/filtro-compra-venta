@@ -973,7 +973,7 @@ def _flatten_columns(df):
     return df
 
 
-@st.cache_data(ttl=600, show_spinner=False)
+@st.cache_data(ttl=600, show_spinner=False, hash_funcs={str: lambda x: x})
 def terminal_cargar_df(ticker, meses=24):
     import time
     fecha_fin    = datetime.now()
@@ -999,7 +999,7 @@ def terminal_cargar_df(ticker, meses=24):
     return pd.DataFrame()
 
 
-@st.cache_data(ttl=600, show_spinner=False)
+@st.cache_data(ttl=600, show_spinner=False, hash_funcs={str: lambda x: x})
 def terminal_cargar_info(ticker):
     import time
     for intento in range(4):
@@ -1086,7 +1086,7 @@ def terminal_calcular_scores(info):
     }
 
 
-@st.cache_data(ttl=600, show_spinner=False)
+@st.cache_data(ttl=600, show_spinner=False, hash_funcs={str: lambda x: x})
 def terminal_sentimiento(ticker):
     try:
         url = (
@@ -1115,7 +1115,7 @@ def terminal_sentimiento(ticker):
         return 0, 0, [], f"Error: {e}"
 
 
-@st.cache_data(ttl=600, show_spinner=False)
+@st.cache_data(ttl=600, show_spinner=False, hash_funcs={str: lambda x: x})
 def terminal_cargar_fundamentales(ticker_symbol):
     try:
         ticker     = yf.Ticker(ticker_symbol)
@@ -1364,6 +1364,8 @@ def plot_matriz(dm, ticker_symbol):
 
 def render_terminal(ticker_symbol):
     """Renderiza la Terminal Financiera completa para el ticker dado."""
+    # Garantizar que siempre sea string limpio
+    ticker_symbol = str(ticker_symbol).strip().upper()
 
     st.markdown(f"""
     <div class="terminal-panel">
@@ -1848,7 +1850,10 @@ if not st.session_state["df_result"].empty:
 
     # ── TERMINAL FINANCIERA — aparece AQUÍ, encima de la tabla ─────────
     ticker_terminal = st.session_state.get("ticker_terminal")
-    if ticker_terminal:
+    # Validar que sea un string limpio (no un objeto DeltaGenerator ni None)
+    if ticker_terminal and isinstance(ticker_terminal, str) and ticker_terminal.strip():
+        ticker_terminal = ticker_terminal.strip().upper()
+        st.session_state["ticker_terminal"] = ticker_terminal  # normalizar
         st.markdown("---")
         render_terminal(ticker_terminal)
         st.markdown("---")
@@ -1913,8 +1918,11 @@ if not st.session_state["df_result"].empty:
         clicked = components.html(html_tabla, height=height_px, scrolling=True)
 
         # Si el usuario hizo click en un ticker nuevo, actualizar session_state y rerun
-        if clicked and clicked != st.session_state.get("ticker_terminal"):
-            st.session_state["ticker_terminal"] = clicked
+        if (clicked
+                and isinstance(clicked, str)
+                and clicked.strip()
+                and clicked.strip().upper() != st.session_state.get("ticker_terminal")):
+            st.session_state["ticker_terminal"] = clicked.strip().upper()
             st.rerun()
 
     # CSV download
