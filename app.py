@@ -1861,20 +1861,43 @@ if not st.session_state["df_result"].empty:
     if df_filtrado.empty:
         st.warning("⚠️ Ningún ticker cumple los filtros actuales.")
     else:
-        # ── Tabla con tickers clicables via postMessage nativo Streamlit ─
+        # ── Selector de ticker nativo Streamlit ──────────────────────────
+        tickers_lista  = df_filtrado["Ticker"].tolist()
+        ticker_activo  = st.session_state.get("ticker_terminal")
+
+        # Índice actual en la lista filtrada (para que el selectbox muestre el activo)
+        idx_actual = 0
+        if ticker_activo and ticker_activo in tickers_lista:
+            idx_actual = tickers_lista.index(ticker_activo)
+
+        sel_col, cerrar_col = st.columns([5, 1])
+        with sel_col:
+            ticker_seleccionado = st.selectbox(
+                "🔎 Seleccionar ticker para Terminal Financiera",
+                options=tickers_lista,
+                index=idx_actual,
+                key="sel_ticker_terminal",
+                label_visibility="collapsed",
+                placeholder="Elige un ticker…",
+            )
+        with cerrar_col:
+            if st.button("✕ Cerrar", key="btn_cerrar_terminal", use_container_width=True):
+                st.session_state["ticker_terminal"] = None
+                st.rerun()
+
+        # Abrir terminal si se seleccionó un ticker diferente al actual
+        if ticker_seleccionado and ticker_seleccionado != st.session_state.get("ticker_terminal"):
+            st.session_state["ticker_terminal"] = ticker_seleccionado
+            st.rerun()
+
+        # ── Tabla HTML solo para visualización ───────────────────────────
         import streamlit.components.v1 as components
 
-        ticker_activo = st.session_state.get("ticker_terminal")
-        tabla_html    = render_tabla_html(df_filtrado, ticker_activo)
-        n_rows        = len(df_filtrado)
-        height_px     = min(900, max(220, 56 + n_rows * 38))
+        tabla_html = render_tabla_html(df_filtrado, st.session_state.get("ticker_terminal"))
+        n_rows     = len(df_filtrado)
+        height_px  = min(900, max(220, 56 + n_rows * 38))
 
-        # Usamos components.html con retorno de valor.
-        # Streamlit captura window.parent.postMessage con la forma
-        # { type:"streamlit:setComponentValue", value: <cualquier cosa> }
-        # SIN recargar la página ni resetear session_state.
-        html_tabla = f"""
-        <!DOCTYPE html>
+        html_tabla = f"""<!DOCTYPE html>
         <html>
         <head>
         <style>
@@ -1882,48 +1905,10 @@ if not st.session_state["df_result"].empty:
             {_tabla_css()}
         </style>
         </head>
-        <body>
-        {tabla_html}
-        <script>
-        // Protocolo nativo de Streamlit components para devolver un valor
-        // sin recargar la página: postMessage con isStreamlitMessage=true
-        function sendValue(val) {{
-            window.parent.postMessage({{
-                isStreamlitMessage: true,
-                type: "streamlit:setComponentValue",
-                value: val
-            }}, "*");
-        }}
+        <body>{tabla_html}</body>
+        </html>"""
 
-        function selectTicker(ticker) {{
-            // Resaltar badge activo inmediatamente (feedback visual)
-            document.querySelectorAll('.ticker-badge').forEach(function(el) {{
-                el.classList.remove('active');
-            }});
-            event.target.classList.add('active');
-            // Enviar valor a Streamlit
-            sendValue(ticker);
-        }}
-
-        // Avisar a Streamlit que el componente está listo
-        window.addEventListener('load', function() {{
-            sendValue(null);
-        }});
-        </script>
-        </body>
-        </html>
-        """
-
-        # El valor retornado por components.html es el último enviado via postMessage
-        clicked = components.html(html_tabla, height=height_px, scrolling=True)
-
-        # Si el usuario hizo click en un ticker nuevo, actualizar session_state y rerun
-        if (clicked
-                and isinstance(clicked, str)
-                and clicked.strip()
-                and clicked.strip().upper() != st.session_state.get("ticker_terminal")):
-            st.session_state["ticker_terminal"] = clicked.strip().upper()
-            st.rerun()
+        components.html(html_tabla, height=height_px, scrolling=True)
 
     # CSV download
     csv = df_filtrado.drop(columns=["Compra", "Venta"], errors="ignore").to_csv(index=False)
