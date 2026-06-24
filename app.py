@@ -1425,16 +1425,19 @@ def render_terminal(ticker_symbol):
         c1, c2, c3, c4, c5 = st.columns(5)
 
         pot_str = ""
-        if target_price:
+        if target_price and isinstance(target_price, float) and target_price > 0:
             pot = ((target_price - precio) / precio) * 100
             pot_str = f'<div class="term-metric-sub">Target ${target_price:.2f} · {pot:+.1f}%</div>'
 
         with c1:
-            st.markdown(f"""<div class="term-metric-card">
-                <div class="term-metric-label">Precio Actual</div>
-                <div class="term-metric-value">${precio:,.2f}</div>
-                {pot_str}
-            </div>""", unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="term-metric-card">'
+                f'<div class="term-metric-label">Precio Actual</div>'
+                f'<div class="term-metric-value">${precio:,.2f}</div>'
+                f'{pot_str}'
+                f'</div>',
+                unsafe_allow_html=True
+            )
 
         rsi_cls = "negative" if rsi_val > 70 else ("positive" if rsi_val < 30 else "neutral")
         rsi_lbl = 'Sobrecompra' if rsi_val > 70 else ('Sobreventa' if rsi_val < 30 else 'Zona Neutra')
@@ -1852,33 +1855,37 @@ if not st.session_state["df_result"].empty:
         st.warning("⚠️ Ningún ticker cumple los filtros actuales.")
     else:
         # ── Selector de ticker nativo Streamlit ──────────────────────────
-        tickers_lista  = df_filtrado["Ticker"].tolist()
-        ticker_activo  = st.session_state.get("ticker_terminal")
+        tickers_lista = df_filtrado["Ticker"].tolist()
+        ticker_activo = st.session_state.get("ticker_terminal")
 
-        # Índice actual en la lista filtrada (para que el selectbox muestre el activo)
-        idx_actual = 0
-        if ticker_activo and ticker_activo in tickers_lista:
-            idx_actual = tickers_lista.index(ticker_activo)
+        # Si el ticker activo no está en la lista filtrada, resetear
+        if ticker_activo and ticker_activo not in tickers_lista:
+            ticker_activo = None
+            st.session_state["ticker_terminal"] = None
+
+        idx_actual = tickers_lista.index(ticker_activo) if ticker_activo in tickers_lista else 0
+
+        def _on_ticker_change():
+            """Callback: actualiza ticker_terminal cuando cambia el selectbox."""
+            st.session_state["ticker_terminal"] = st.session_state["sel_ticker_terminal"]
 
         sel_col, cerrar_col = st.columns([5, 1])
         with sel_col:
-            ticker_seleccionado = st.selectbox(
+            st.selectbox(
                 "🔎 Seleccionar ticker para Terminal Financiera",
                 options=tickers_lista,
                 index=idx_actual,
                 key="sel_ticker_terminal",
                 label_visibility="collapsed",
-                placeholder="Elige un ticker…",
+                on_change=_on_ticker_change,
             )
         with cerrar_col:
-            if st.button("✕ Cerrar", key="btn_cerrar_terminal", use_container_width=True):
+            if st.button("✕ Cerrar Terminal", key="btn_cerrar_terminal", use_container_width=True):
                 st.session_state["ticker_terminal"] = None
+                # Resetear el selectbox al primer ticker
+                if "sel_ticker_terminal" in st.session_state:
+                    del st.session_state["sel_ticker_terminal"]
                 st.rerun()
-
-        # Abrir terminal si se seleccionó un ticker diferente al actual
-        if ticker_seleccionado and ticker_seleccionado != st.session_state.get("ticker_terminal"):
-            st.session_state["ticker_terminal"] = ticker_seleccionado
-            st.rerun()
 
         # ── Tabla HTML solo para visualización ───────────────────────────
         import streamlit.components.v1 as components
